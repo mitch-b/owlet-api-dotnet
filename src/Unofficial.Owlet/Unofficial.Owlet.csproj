@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <RootNamespace>Unofficial.Owlet</RootNamespace>
+        <AssemblyName>Unofficial.Owlet</AssemblyName>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageId>Unofficial.Owlet</PackageId>
+        <Version>$(BUILD_BUILDNUMBER)</Version>
+        <Company>mitchbarry.com</Company>
+        <Product>Owlet Smart Sock API Wrapper</Product>
+        <Authors>Mitchell Barry</Authors>
+        <RepositoryUrl>https://github.com/mitch-b/owlet-api-dotnet</RepositoryUrl>
+        <Copyright>2018 Mitchell Barry</Copyright>
+        <Description>This code is in no way affiliated with, authorized, maintained, sponsored or endorsed by Owlet Baby Care or any of its affiliates or subsidiaries. This is an independent and unofficial API. Use at your own risk.</Description>
+        <PackageProjectUrl>https://github.com/mitch-b/owlet-api-dotnet</PackageProjectUrl>
+        <PackageTags>owlet</PackageTags>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Version)' == '' ">
+        <NUGET_SUFFIX>local</NUGET_SUFFIX>
+        <Version>$([System.DateTime]::Now.ToString('1.yyyy.MMdd.mm'))</Version>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(NUGET_SUFFIX)' != '' ">
+        <!-- trim any user-provided hyphens -->
+        <NUGET_SUFFIX>$(NUGET_SUFFIX.TrimStart('-'))</NUGET_SUFFIX>
+        <!-- stamp .nupkg with suffixed version -->
+        <PackageVersion>$(VERSION)-$(NUGET_SUFFIX)</PackageVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.1.1" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="2.1.1" />
+        <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="2.1.1" />
+        <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    </ItemGroup>
+
+</Project>
