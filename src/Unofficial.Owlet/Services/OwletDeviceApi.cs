@@ -107,13 +107,13 @@ namespace Unofficial.Owlet.Services
             else
             {
                 accessToken = await GetAccessToken(accessToken);
-                var appAliveProperty = await this.GetPropertyByNameAsync(deviceSerialNumber, "APP_ACTIVE", accessToken);
-                if (appAliveProperty == null)
+                var appActiveProperty = await this.GetPropertyByNameAsync(deviceSerialNumber, "APP_ACTIVE", accessToken);
+                if (appActiveProperty == null)
                 {
                     return 0;
                 }
 
-                appActivePropertyId = appAliveProperty.Key;
+                appActivePropertyId = appActiveProperty.Key;
                 if (appActivePropertyId != 0)
                 {
                     // persist for current session

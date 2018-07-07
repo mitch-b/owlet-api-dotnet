@@ -8,13 +8,13 @@ This code is in no way affiliated with, authorized, maintained, sponsored or end
 
 ## Fair Warning
 
-> ### :warning: Some method calls possible by utilizing this API **could cause instability with your Owlet Smart Sock**. Particularly any usage of the following methods: 
+> ### :warning: Some method calls possible by utilizing this API **could cause instability with your Owlet Smart Sock**. Particularly any usage of the following methods:
 >
-> * `IOwletDeviceApi.UpdatePropertyAsync`
-> * `IOwletDeviceApi.MarkAppAlive`
-> * `IOwletDeviceApi.TryGetFreshDevicePropertiesAsync` 
+> - `IOwletDeviceApi.UpdatePropertyAsync`
+> - `IOwletDeviceApi.MarkAppActive`
+> - `IOwletDeviceApi.TryGetFreshDevicePropertiesAsync`
 >
-> Which exist so that the Owlet Base Station and Smart Sock can advertise new datapoints to the AylaNetworks IoT platform that this API wrapper can query - which requires your Owlet device to broadcast `APP_ACTIVE = 1`. This framework will handle managing your `APP_ACTIVE` property. You will assume the risk if this changes. 
+> Which exist so that the Owlet Base Station and Smart Sock can advertise new datapoints to the AylaNetworks IoT platform that this API wrapper can query - which requires your Owlet device to broadcast `APP_ACTIVE = 1`. This framework will handle managing your `APP_ACTIVE` property. You will assume the risk if this changes.
 >
 > I say "could cause instability" because even though I have not experienced any adverse side-effects, there is no documented usage guidelines provided by Owlet Baby Care, so I do not know exactly how they internally use the Ayla Networks IoT platform to aggregate data for their own Connected Care reporting application. That all being said, I have used this code to my own success.
 >
@@ -26,25 +26,25 @@ Device Properties for specific Owlet Smart Sock:
 
 ```json
 [
-    {
-        "Name": "BATT_LEVEL",
-        "Value": 93,
-        "DataUpdatedAt": "2018-01-01T12:34:56Z",
-        // ...
-    },
-    {
-        "Name": "HEART_RATE",
-        "Value": 125,
-        "DataUpdatedAt": "2018-01-01T12:34:56Z",
-        // ...
-    },
-    {
-        "Name": "OXYGEN_LEVEL",
-        "Value": 99,
-        "DataUpdatedAt": "2018-01-01T12:34:56Z",
-        // ...
-    },
+  {
+    "Name": "BATT_LEVEL",
+    "Value": 93,
+    "DataUpdatedAt": "2018-01-01T12:34:56Z"
     // ...
+  },
+  {
+    "Name": "HEART_RATE",
+    "Value": 125,
+    "DataUpdatedAt": "2018-01-01T12:34:56Z"
+    // ...
+  },
+  {
+    "Name": "OXYGEN_LEVEL",
+    "Value": 99,
+    "DataUpdatedAt": "2018-01-01T12:34:56Z"
+    // ...
+  }
+  // ...
 ]
 ```
 
@@ -66,11 +66,11 @@ using Unofficial.Owlet.Extensions;
 
 private void ConfigureServices(IServiceCollection services)
 {
-    // ... 
+    // ...
 
     services.AddOwletApi();
 
-    // ... 
+    // ...
 }
 ```
 
@@ -125,7 +125,7 @@ namespace My.App
 
 ## Setting Up Dependency Injection with User Settings
 
-You may want to configure your account email/password in your startup method, then forget about it later. Or you may want to always use your current sock's device serial number (if you know it - or find it using this library), so that you can reduce an additional API call to speed up retrieval of your Owlet Smart Sock data. 
+You may want to configure your account email/password in your startup method, then forget about it later. Or you may want to always use your current sock's device serial number (if you know it - or find it using this library), so that you can reduce an additional API call to speed up retrieval of your Owlet Smart Sock data.
 
 ```cs
 using Unofficial.Owlet.Extensions;
@@ -145,7 +145,7 @@ private void ConfigureServices(IServiceCollection services)
         });
     });
 
-    // ... 
+    // ...
 }
 ```
 
@@ -172,7 +172,7 @@ namespace My.App
             }
         }
 
-        // ... 
+        // ...
     }
 }
 ```
@@ -199,36 +199,36 @@ dotnet-user-secrets set owlet:password mypassword
 
 Many thanks go out to Owlet Baby Care for giving us piece of mind.
 
-Secondly, thanks to 
+Secondly, thanks to
 
-* @puco
-* @bobcat0070
-* @arosequist
+- @puco
+- @bobcat0070
+- @arosequist
 
 for helping me get started working with Ayla Networks IoT platform to read Owlet Smart Sock data!
 
 ## How Does It Work?
 
-I touched on this briefly above, but it's worth calling out again. 
+I touched on this briefly above, but it's worth calling out again.
 
 Other collaborators have identified that it's easy enough to request device properties from the Ayla Networks IoT platform, but the data ends up getting stale after `~30 seconds`, or after the Owlet app has closed.
 
-As it turns out, there's a property returned named `APP_ACTIVE` that reads as `1` when the mobile application is in-use, and `0` when not. 
+As it turns out, there's a property returned named `APP_ACTIVE` that reads as `1` when the mobile application is in-use, and `0` when not.
 
-If we want to fake that the app is always open so that we can collect data over a time period, we need to continually write a new `APP_ACTIVE` datapoint with value of `1` such that the Owlet base station will broadcast the other assorted sock datapoints. Of course, there is a time delay between the initial mark of `APP_ACTIVE` to when the base station is able to create new datapoint records. So, this library takes a swing at `2 seconds` ... even though realistically, that's likely not sufficient for most experiences (2 seconds between notifying Owlet API that it's alive, having data requested from the base station, and the base station replying with datapoints). 
+If we want to fake that the app is always open so that we can collect data over a time period, we need to continually write a new `APP_ACTIVE` datapoint with value of `1` such that the Owlet base station will broadcast the other assorted sock datapoints. Of course, there is a time delay between the initial mark of `APP_ACTIVE` to when the base station is able to create new datapoint records. So, this library takes a swing at `2 seconds` ... even though realistically, that's likely not sufficient for most experiences (2 seconds between notifying Owlet API that it's active, having data requested from the base station, and the base station replying with datapoints).
 
-I mentioned the risks above earlier, too. You can see that this library is making the assumption that there is a property named `APP_ACTIVE` and that its value needs to be `1` in order for data to update. If this property ever gets renamed, or the value it needs to be is ever updated, or an alternate mechanism is introduced, this library will need to be updated for that. 
+I mentioned the risks above earlier, too. You can see that this library is making the assumption that there is a property named `APP_ACTIVE` and that its value needs to be `1` in order for data to update. If this property ever gets renamed, or the value it needs to be is ever updated, or an alternate mechanism is introduced, this library will need to be updated for that.
 
 ### Data Flow
 
-1. Login (`/users/sign_in`)
-1. Get Devices for Account (`/apiv1/devices`)
-1. Get Device Properties (`/apiv1/dsns/{deviceSerialNumber}/properties`)
-    * Are properties stale?
-        1. Create new datapoint marking app as "active" (`/apiv1/properties/{propertyId}/datapoints`)
-        1. Wait a few seconds for data to propagate 
-        1. Query for Device Properties again (repeat)
-
+1.  Login (`/users/sign_in`)
+1.  Get Devices for Account (`/apiv1/devices`)
+1.  Get Device Properties (`/apiv1/dsns/{deviceSerialNumber}/properties`)
+    - Are properties stale?
+      1.  Create new datapoint marking app as "active" (`/apiv1/properties/{propertyId}/datapoints`)
+      1.  Wait a few seconds for data to propagate
+      1.  Query for Device Properties again (repeat)
 
 ---
+
 &copy; 2018 Mitchell Barry
