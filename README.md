@@ -2,6 +2,11 @@
 
 **Unofficial** .NET Standard 2.0 Library. Run on Linux, Mac, Windows.
 
+[![NuGet](https://img.shields.io/nuget/vpre/Unofficial.Owlet.svg)](https://www.nuget.org/packages/Unofficial.Owlet)
+
+![Build status](https://mitch.visualstudio.com/_apis/public/build/definitions/97a642db-3f4a-4c58-a7a7-6155f74394c2/2/badge)
+![nuget.org Release](https://mitch.vsrm.visualstudio.com/_apis/public/Release/badge/97a642db-3f4a-4c58-a7a7-6155f74394c2/1/5)
+
 ## Notice
 
 This code is in no way affiliated with, authorized, maintained, sponsored or endorsed by Owlet Baby Care or any of its affiliates or subsidiaries. This is an independent and unofficial API. **Use at your own risk.**
